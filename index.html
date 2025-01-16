@@ -16,43 +16,25 @@
 </head>
 <body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-
-  <!-- Usar una URL diferente para OrbitControls -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
-  
   <script>
-    // Configuración básica de la escena
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-
-    // Crear un globo terráqueo
     const geometry = new THREE.SphereGeometry(5, 32, 32);
-    const texture = new THREE.TextureLoader().load('textures/earth_textur.png'); // Asegúrate de que la ruta sea correcta
+    const texture = new THREE.TextureLoader().load('textures/earth_texture.png');
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const earth = new THREE.Mesh(geometry, material);
     scene.add(earth);
-
-    // Colocar la cámara para ver bien la Tierra
     camera.position.z = 10;
-
-    // Agregar OrbitControls para interactuar con la cámara (rotación con el mouse)
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-    // Función de animación
     function animate() {
       requestAnimationFrame(animate);
-      
-      // Actualizar los controles para que funcionen bien con el mouse
       controls.update();
-      
-      // Renderizar la escena
       renderer.render(scene, camera);
     }
-
-    // Iniciar la animación
     animate();
   </script>
 </body>
