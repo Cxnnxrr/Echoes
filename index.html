@@ -1,38 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proyecto Alpha v0.0</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-    canvas {
-      display: block;
-    }
-  </style>
+  <title>Proyecto Alpha - Tierra con Contorno</title>
+  <link rel="stylesheet" href="css/styles.css"> <!-- Vincula el archivo CSS -->
 </head>
 <body>
+<!-- Pantalla de Inicio -->
+  <div id="start-screen">
+    <div class="overlay"></div>
+    <button class="start-button" onclick="startApp()">Empezar</button>
+  </div>
+
+  <!-- Panel Interactivo -->
+  <div id="info-panel">
+    <button id="close-btn">✖</button>
+    <h2 id="country-name"></h2>
+    <p><strong>Capital:</strong> <span id="capital"></span></p>
+    <p><strong>Población:</strong> <span id="population"></span></p>
+    <img id="flag" src="" alt="Bandera">
+    <audio id="anthem" controls></audio>
+    <video id="video" controls></video>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
   <script>
+const clickSound = new Audio('media/audio/effects/efecto1.mp3');
+// Función para reproducir el sonido al hacer clic en el botón
+document.querySelector('.start-button').addEventListener('click', function() {
+  clickSound.play();  // Reproduce el sonido al hacer clic
+});
+// Efecto de fade-in al cargar la página
+window.onload = function() {
+  // Añadir la clase 'show' después de que la página se haya cargado
+  setTimeout(() => {
+    document.querySelector('.start-button').classList.add('show');
+  }, 500); // Esto hará que el botón se desvanezca con el fade-in después de 500ms
+};
+
+function startApp() {
+  const startScreen = document.getElementById('start-screen');
+
+  // Aplica fade-out con transición suave solo después del clic en "Empezar"
+  startScreen.classList.add('fade-out');
+
+  // Espera a que termine el fade-out antes de ocultar
+  setTimeout(() => {
+    startScreen.style.display = 'none';
+  }, 1500);
+}
+    // Crear la escena, la cámara y el renderizador
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-    const geometry = new THREE.SphereGeometry(5, 32, 32);
-    const texture = new THREE.TextureLoader().load('textures/earth_texture.png');
-    const material = new THREE.MeshBasicMaterial({ map: texture });
-    const earth = new THREE.Mesh(geometry, material);
+
+    // Cargar la textura de la Tierra
+    const earthGeometry = new THREE.SphereGeometry(600, 64, 64);
+    const earthTexture = new THREE.TextureLoader().load('textures/earthtexture.png');
+    const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     scene.add(earth);
-    camera.position.z = 10;
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // Posicionar la cámara
+    camera.position.set(150, 0, 1550);
+    camera.lookAt(earth.position);
+
+    // Crear luces
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(1000, 1000, 1000);
+    scene.add(light);
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+    // Raycaster para detectar clics en la Tierra
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    function onMouseClick(event) {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObject(earth);
+
+      if (intersects.length > 0) {
+        showCountryInfo("Argentina", "Buenos Aires", "45 millones", "textures/argentina.png", "media/argentina.mp3", "media/argentina.mp4");
+      }
+    }
+
+    function showCountryInfo(name, capital, population, flag, anthem, video) {
+      document.getElementById("country-name").innerText = name;
+      document.getElementById("capital").innerText = capital;
+      document.getElementById("population").innerText = population;
+      document.getElementById("flag").src = flag;
+      document.getElementById("anthem").src = anthem;
+      document.getElementById("video").src = video;
+
+      document.getElementById("info-panel").classList.add("show");
+    }
+
+    window.addEventListener('click', onMouseClick);
+
+    // Agregar evento al botón de cierre
+    document.getElementById("close-btn").addEventListener("click", () => {
+      document.getElementById("info-panel").classList.remove("show");
+    });
+
     function animate() {
       requestAnimationFrame(animate);
-      controls.update();
       renderer.render(scene, camera);
     }
     animate();

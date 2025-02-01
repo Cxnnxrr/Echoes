@@ -1,0 +1,106 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+}
+
+canvas {
+  display: block;
+}
+
+#info-panel {
+  position: fixed;
+  top: 0;
+  right: -350px; /* Oculto fuera de la pantalla */
+  width: 300px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.5);
+  transition: right 0.5s ease-in-out;
+  overflow-y: auto;
+}
+
+#info-panel.show {
+  right: 0; /* Se muestra en pantalla */
+}
+
+#close-btn {
+  background: red;
+  color: white;
+  border: none;
+  font-size: 16px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+img, video {
+  width: 100%;
+  margin-top: 10px;
+}
+
+#start-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  opacity: 1; /* Hacer visible desde el inicio */
+  transition: opacity 1.5s ease-in-out; /* Esta transición es para el fade-out después del clic */
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 250%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  pointer-events: none;
+}
+
+.start-button {
+  position: relative;
+  margin-bottom: 60px;
+  padding: 15px 40px;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  background: black;
+  border: 2px solid white;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  opacity: 0; /* Inicialmente invisible */
+  transition: opacity 1.5s ease-in-out; /* Para la animación de fade-in */
+}
+
+
+.start-button.fade-in {
+  opacity: 1; /* Hace que el botón sea visible */
+}
+
+.start-button:hover {
+  background: #333;
+  border: 2px solid #fff;
+  color: white;
+  transform: scale(1.05); /* Suave aumento de tamaño */
+}
+
+.start-button.show {
+  opacity: 1; /* Se hace visible */
+}
+
+.fade-out {
+  opacity: 0 !important;
+  transition: opacity 1.5s ease-in-out;
+}
+
