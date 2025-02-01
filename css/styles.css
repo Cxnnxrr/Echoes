@@ -15,7 +15,7 @@ canvas {
 #info-panel {
   position: fixed;
   top: 0;
-  right: -350px; /* Oculto fuera de la pantalla */
+  right: -350px;
   width: 300px;
   height: 100vh;
   background: rgba(0, 0, 0, 0.8);
@@ -27,7 +27,7 @@ canvas {
 }
 
 #info-panel.show {
-  right: 0; /* Se muestra en pantalla */
+  right: 0;
 }
 
 #close-btn {
@@ -53,8 +53,19 @@ img, video {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  opacity: 1; /* Hacer visible desde el inicio */
-  transition: opacity 1.5s ease-in-out; /* Esta transición es para el fade-out después del clic */
+  opacity: 1;
+  transition: opacity 1.5s ease-in-out;
+}
+
+/* Crea una capa overlay que puedes superponer sobre el fondo */
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* Aquí puedes ajustar el valor 0.2 para más o menos oscurecimiento */
+  pointer-events: none; /* Esto hace que no interfiera con la interacción */
 }
 
 .overlay {
@@ -65,42 +76,69 @@ img, video {
   height: 250%;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out; /* Agregamos una transición */
+}
+
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .start-button {
-  position: relative;
-  margin-bottom: 60px;
-  padding: 15px 40px;
-  font-size: 22px;
-  font-weight: bold;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: black;
   color: white;
-  background: black;
   border: 2px solid white;
   border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-  opacity: 0; /* Inicialmente invisible */
-  transition: opacity 1.5s ease-in-out; /* Para la animación de fade-in */
-}
-
-
-.start-button.fade-in {
-  opacity: 1; /* Hace que el botón sea visible */
-}
-
-.start-button:hover {
-  background: #333;
-  border: 2px solid #fff;
-  color: white;
-  transform: scale(1.05); /* Suave aumento de tamaño */
+  opacity: 0;
+  transition: opacity 1s ease-in-out, background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 
 .start-button.show {
-  opacity: 1; /* Se hace visible */
+  opacity: 1;
 }
+
+.start-button:hover {
+  background-color: white;
+  color: black;
+  border-color: black;
+}
+
 
 .fade-out {
   opacity: 0 !important;
   transition: opacity 1.5s ease-in-out;
 }
 
+#back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transition: opacity 1s ease-in-out, background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+}
+
+#back-button.show {
+  opacity: 1;
+}
+
+#back-button:hover {
+  background-color: white;
+  color: black;
+  border-color: black;
+}

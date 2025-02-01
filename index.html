@@ -7,11 +7,13 @@
   <link rel="stylesheet" href="css/styles.css"> <!-- Vincula el archivo CSS -->
 </head>
 <body>
-<!-- Pantalla de Inicio -->
+  <!-- Pantalla de Inicio -->
   <div id="start-screen">
     <div class="overlay"></div>
     <button class="start-button" onclick="startApp()">Empezar</button>
   </div>
+  <div id="overlay"></div>
+  <audio id="backButtonSound" src="media/audio/effects/efecto2.mp3"></audio>
 
   <!-- Panel Interactivo -->
   <div id="info-panel">
@@ -24,96 +26,150 @@
     <video id="video" controls></video>
   </div>
 
+  <!-- Botón Volver -->
+  <button id="back-button" onclick="backToStartScreen()">Volver</button>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
   <script>
-const clickSound = new Audio('media/audio/effects/efecto1.mp3');
-// Función para reproducir el sonido al hacer clic en el botón
-document.querySelector('.start-button').addEventListener('click', function() {
-  clickSound.play();  // Reproduce el sonido al hacer clic
-});
-// Efecto de fade-in al cargar la página
-window.onload = function() {
-  // Añadir la clase 'show' después de que la página se haya cargado
-  setTimeout(() => {
-    document.querySelector('.start-button').classList.add('show');
-  }, 500); // Esto hará que el botón se desvanezca con el fade-in después de 500ms
-};
+    const clickSound = new Audio('media/audio/effects/efecto1.mp3');
 
-function startApp() {
-  const startScreen = document.getElementById('start-screen');
+    document.querySelector('.start-button').addEventListener('click', function() {
+      clickSound.play();
+    });
 
-  // Aplica fade-out con transición suave solo después del clic en "Empezar"
-  startScreen.classList.add('fade-out');
+    window.onload = function() {
+      setTimeout(() => {
+        document.querySelector('.start-button').classList.add('show');
+      }, 500);
+    };
 
-  // Espera a que termine el fade-out antes de ocultar
-  setTimeout(() => {
-    startScreen.style.display = 'none';
-  }, 1500);
-}
-    // Crear la escena, la cámara y el renderizador
+    let isRotating = true;
+    let targetRotation = new THREE.Vector3(0, 0, 0);
+    let rotationSpeed = 0.05;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Cargar la textura de la Tierra
     const earthGeometry = new THREE.SphereGeometry(600, 64, 64);
-    const earthTexture = new THREE.TextureLoader().load('textures/earthtexture.png');
-    const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
+    const normalTexture = new THREE.TextureLoader().load('textures/earthtexture.png');
+    const earthMaterial = new THREE.MeshStandardMaterial({ map: normalTexture });
     const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     scene.add(earth);
 
-    // Posicionar la cámara
+    const loader = new THREE.TextureLoader();
+    loader.load('textures/cosmos.jpg', (texture) => {
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = false;
+      scene.background = texture;
+    });
+
     camera.position.set(150, 0, 1550);
     camera.lookAt(earth.position);
 
-    // Crear luces
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(1000, 1000, 1000);
     scene.add(light);
     const ambientLight = new THREE.AmbientLight(0x404040);
     scene.add(ambientLight);
 
-    // Raycaster para detectar clics en la Tierra
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
-    function onMouseClick(event) {
+    const southAmericaTexture = new THREE.TextureLoader().load('textures/contornoa.jpg');
+    earth.material.map = normalTexture;
+
+    let isHoveringSouthAmerica = false;
+
+    function isCursorOverSouthAmerica(intersect) {
+      const point = intersect.point.normalize();
+      const lat = Math.asin(point.y) * (180 / Math.PI);
+      const lon = Math.atan2(point.x, point.z) * (180 / Math.PI);
+
+      return lat < 15 && lat > -60 && lon > -85 && lon < -30;
+    }
+
+    function onMouseMove(event) {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObject(earth);
 
       if (intersects.length > 0) {
-        showCountryInfo("Argentina", "Buenos Aires", "45 millones", "textures/argentina.png", "media/argentina.mp3", "media/argentina.mp4");
+        if (isCursorOverSouthAmerica(intersects[0])) {
+          if (!isHoveringSouthAmerica) {
+            earth.material.map = southAmericaTexture;
+            earth.material.needsUpdate = true;
+            isHoveringSouthAmerica = true;
+          }
+        } else {
+          if (isHoveringSouthAmerica) {
+            earth.material.map = normalTexture;
+            earth.material.needsUpdate = true;
+            isHoveringSouthAmerica = false;
+          }
+        }
       }
     }
 
-    function showCountryInfo(name, capital, population, flag, anthem, video) {
-      document.getElementById("country-name").innerText = name;
-      document.getElementById("capital").innerText = capital;
-      document.getElementById("population").innerText = population;
-      document.getElementById("flag").src = flag;
-      document.getElementById("anthem").src = anthem;
-      document.getElementById("video").src = video;
-
-      document.getElementById("info-panel").classList.add("show");
-    }
-
-    window.addEventListener('click', onMouseClick);
-
-    // Agregar evento al botón de cierre
-    document.getElementById("close-btn").addEventListener("click", () => {
-      document.getElementById("info-panel").classList.remove("show");
-    });
+    window.addEventListener('mousemove', onMouseMove);
 
     function animate() {
       requestAnimationFrame(animate);
+
+      if (isRotating) {
+        earth.rotation.y += 0.003;
+      } else {
+        earth.rotation.x = THREE.MathUtils.lerp(earth.rotation.x, targetRotation.x, rotationSpeed);
+        earth.rotation.y = THREE.MathUtils.lerp(earth.rotation.y, targetRotation.y, rotationSpeed);
+        earth.rotation.z = THREE.MathUtils.lerp(earth.rotation.z, targetRotation.z, rotationSpeed);
+      }
+
       renderer.render(scene, camera);
     }
+
     animate();
+
+    function startApp() {
+      const startScreen = document.getElementById('start-screen');
+      const overlay = document.querySelector('.overlay');
+
+      overlay.classList.add('hidden');
+      startScreen.classList.add('fade-out');
+
+      setTimeout(() => {
+        startScreen.style.display = 'none';
+      }, 1500);
+
+      isRotating = false;
+      targetRotation.set(0, 0, 0);
+      document.getElementById('back-button').classList.add('show');
+    }
+
+    function backToStartScreen() {
+      const startScreen = document.getElementById('start-screen');
+      const overlay = document.querySelector('.overlay');
+      const backSound = document.getElementById('backButtonSound');
+
+      backSound.currentTime = 0;
+      backSound.play();
+
+      startScreen.style.display = 'block';
+      startScreen.classList.remove('fade-out');
+
+      setTimeout(() => {
+        overlay.classList.remove('hidden');
+      }, 100);
+
+      document.querySelector('.start-button').classList.add('show');
+      isRotating = true;
+      document.getElementById('back-button').classList.remove('show');
+    }
   </script>
 </body>
 </html>
