@@ -29,6 +29,13 @@
   <!-- Botón Volver -->
   <button id="back-button" onclick="backToStartScreen()">Volver</button>
 
+  <!-- Botones de región -->
+  <div id="button-container">
+    <button class="region-button">Sudamérica</button>
+    <button class="region-button">Norteamérica</button>
+    <button class="region-button">Centroamérica</button>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
   <script>
@@ -87,13 +94,49 @@
 
     function isCursorOverSouthAmerica(intersect) {
       const point = intersect.point.normalize();
-      const lat = Math.asin(point.y) * (180 / Math.PI);
-      const lon = Math.atan2(point.x, point.z) * (180 / Math.PI);
+      const lat = Math.asin(point.y) * (180 / Math.PI);  // Latitud
+      const lon = Math.atan2(point.x, point.z) * (180 / Math.PI);  // Longitud
 
-      return lat < 15 && lat > -60 && lon > -85 && lon < -30;
+      // Definir límites aproximados para Sudamérica
+      return lat < 15 && lat > -60 && lon > -85 && lon < -30; 
     }
 
     function onMouseMove(event) {
+      // Convertir las coordenadas del ratón a un rango entre -1 y 1
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      // Configurar el rayo a partir de las coordenadas del ratón
+      raycaster.setFromCamera(mouse, camera);
+
+      // Comprobar las intersecciones con la esfera de la Tierra
+      const intersects = raycaster.intersectObject(earth);
+
+      if (intersects.length > 0) {
+        // Si el ratón está sobre Sudamérica, cambiamos la textura
+        if (isCursorOverSouthAmerica(intersects[0])) {
+          if (!isHoveringSouthAmerica) {
+            console.log("Cursor sobre Sudamérica. Aplicando contorno...");
+            earth.material.map = southAmericaTexture;  // Aplica la textura de Sudamérica
+            earth.material.needsUpdate = true;  // Actualiza el material
+            isHoveringSouthAmerica = true;  // Marca que está sobre Sudamérica
+          }
+        } else {
+          // Si el ratón no está sobre Sudamérica, revertimos la textura
+          if (isHoveringSouthAmerica) {
+            console.log("Cursor fuera de Sudamérica. Revirtiendo textura...");
+            earth.material.map = normalTexture;  // Restaura la textura normal
+            earth.material.needsUpdate = true;  // Actualiza el material
+            isHoveringSouthAmerica = false;  // Marca que ya no está sobre Sudamérica
+          }
+        }
+      }
+    }
+
+    window.addEventListener('click', onEarthClick);
+    window.addEventListener('mousemove', onMouseMove);
+
+    function onEarthClick(event) {
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -101,24 +144,29 @@
       const intersects = raycaster.intersectObject(earth);
 
       if (intersects.length > 0) {
-        if (isCursorOverSouthAmerica(intersects[0])) {
-          if (!isHoveringSouthAmerica) {
-            earth.material.map = southAmericaTexture;
-            earth.material.needsUpdate = true;
-            isHoveringSouthAmerica = true;
-          }
-        } else {
-          if (isHoveringSouthAmerica) {
-            earth.material.map = normalTexture;
-            earth.material.needsUpdate = true;
-            isHoveringSouthAmerica = false;
+        const intersect = intersects[0];
+        const point = intersect.point.normalize(); // Normaliza el punto de intersección
+        const lat = Math.asin(point.y) * (180 / Math.PI); // Calcula la latitud
+        const lon = Math.atan2(point.x, point.z) * (180 / Math.PI); // Calcula la longitud
+
+        console.log(`Latitud: ${lat.toFixed(2)}, Longitud: ${lon.toFixed(2)}`);
+
+        // Verifica si las coordenadas están dentro del rango de un país
+        for (let country in countriesData) {
+          const countryData = countriesData[country];
+          const countryLat = countryData.lat;
+          const countryLon = countryData.lon;
+
+          // Verifica si las coordenadas de clic están cerca de las del país
+          if (Math.abs(lat - countryLat) < 5 && Math.abs(lon - countryLon) < 5) {
+            // Mostrar información del país
+            showCountryInfo(country, countryData);
+            break;
           }
         }
       }
     }
-
-    window.addEventListener('mousemove', onMouseMove);
-
+      
     function animate() {
       requestAnimationFrame(animate);
 
@@ -138,6 +186,7 @@
     function startApp() {
       const startScreen = document.getElementById('start-screen');
       const overlay = document.querySelector('.overlay');
+      const buttonContainer = document.getElementById('button-container');
 
       overlay.classList.add('hidden');
       startScreen.classList.add('fade-out');
@@ -145,6 +194,10 @@
       setTimeout(() => {
         startScreen.style.display = 'none';
       }, 1500);
+
+      setTimeout(() => {
+        buttonContainer.classList.add('visible');
+      }, 1500); // Esto hará que los botones aparezcan después de 0.5 segundos
 
       isRotating = false;
       targetRotation.set(0, 0, 0);
@@ -155,21 +208,223 @@
       const startScreen = document.getElementById('start-screen');
       const overlay = document.querySelector('.overlay');
       const backSound = document.getElementById('backButtonSound');
+      const buttonContainer = document.getElementById('button-container');
 
       backSound.currentTime = 0;
       backSound.play();
 
-      startScreen.style.display = 'block';
-      startScreen.classList.remove('fade-out');
+      buttonContainer.classList.add('fade-out'); 
 
       setTimeout(() => {
+        startScreen.style.display = 'block';
+        startScreen.classList.remove('fade-out');
         overlay.classList.remove('hidden');
-      }, 100);
-
-      document.querySelector('.start-button').classList.add('show');
-      isRotating = true;
-      document.getElementById('back-button').classList.remove('show');
+        document.querySelector('.start-button').classList.add('show');
+        isRotating = true;
+        document.getElementById('back-button').classList.remove('show');
+        buttonContainer.classList.remove('visible');
+        buttonContainer.classList.remove('fade-out'); 
+      }, 1500); 
     }
+
+    function moveToRegion(position, lookAt) {
+      const duration = 1500;
+      const startTime = performance.now();
+
+      const startPos = camera.position.clone();
+      const startLookAt = new THREE.Vector3();
+      camera.getWorldDirection(startLookAt);
+
+      function animateCamera(time) {
+        const elapsed = time - startTime;
+        const t = Math.min(elapsed / duration, 1);
+
+        camera.position.lerpVectors(startPos, position, t);
+        const currentLookAt = startLookAt.clone().lerp(lookAt, t);
+        camera.lookAt(currentLookAt);
+
+        if (t < 1) {
+          requestAnimationFrame(animateCamera);
+        }
+      }
+
+      requestAnimationFrame(animateCamera);
+    }
+
+    const regions = {
+      southAmerica: {
+        position: new THREE.Vector3(500, -300, 1200),
+        lookAt: new THREE.Vector3(0, -250, 0),
+      },
+      northAmerica: {
+        position: new THREE.Vector3(-300, 400, 1100),
+        lookAt: new THREE.Vector3(0, 350, 0),
+      },
+      centralAmerica: {
+        position: new THREE.Vector3(0, 150, 900),
+        lookAt: new THREE.Vector3(0, 100, 0),
+      },
+    };
+
+    document.querySelectorAll('.region-button').forEach((button, index) => {
+      button.addEventListener('click', function() {
+        clickSound.play();
+
+        switch (index) {
+          case 0: 
+            moveToRegion(regions.southAmerica.position, regions.southAmerica.lookAt);
+            break;
+          case 1: 
+            moveToRegion(regions.northAmerica.position, regions.northAmerica.lookAt);
+            break;
+          case 2: 
+            moveToRegion(regions.centralAmerica.position, regions.centralAmerica.lookAt);
+            break;
+        }
+      });
+    });
+
+    const countriesData = {
+      "Ecuador": {
+        lat: -1.67,
+        lon: 11.56,
+        capital: "Quito",
+        population: "17,000,000",
+        flag: "media/images/Ecuador.jpg",
+        anthem: "media/audio/himnos/Ecuador.mp3",
+        video: "media/videos/ecuador.mp4" 
+      },
+      "Colombia": {
+        lat: 6.19,
+        lon: 12.27,
+        capital: "Bogotá",
+        population: "50,000,000",
+        flag: "media/images/Colombia.png",
+        anthem: "media/audio/himnos/Colombia.mp3",
+        video: "media/videos/Colombia.mp4" 
+      },
+      "Perú": {
+        lat: -9.48,
+        lon: 14.63,
+        capital: "Lima",
+        population: "30,000,000",
+        flag: "media/images/Peru.jpg",
+        anthem: "media/audio/himnos/Peru.mp3",
+        video: "media/videos/Peru.mp4" 
+      },
+     "Venezuela": {
+    lat: 6.26,
+    lon: 25.02,
+    capital: "Caracas",
+    population: "28,000,000",
+    flag: "media/images/venezuela.jpg",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/venezuela.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Venezuela.mp4" 
+},
+  "Brasil": {
+    lat: -10.44,
+    lon: 37.46,
+    capital: "Brasilia",
+    population: "211,000,000",
+    flag: "media/images/brasil.jpg",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/brasil.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Brasil.mp4" 
+  },
+  "Argentina": {
+    lat: -30.75,
+    lon: 25.44,
+    capital: "Buenos Aires",
+    population: "45,000,000",
+    flag: "media/images/argentina.jpg",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/argentina.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Argentina.mp4" 
+  },
+  "Chile": {
+    lat: -28.30,
+    lon: 18.50,
+    capital: "Santiago",
+    population: "19,611,704",
+    flag: "media/images/chile.png",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/chile.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Chile.mp4" 
+  },
+  "Bolivia": {
+    lat: -15.92,
+    lon: 27.75,
+    capital: "Sucre",
+    population: "11,513,100",
+    flag: "media/images/bolivia.png",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/bolivia.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Bolivia.mp4" 
+  },
+  "Uruguay": {
+    lat: -30.95,
+    lon: 33.87,
+    capital: "Montevideo",
+    population: "3,500,000",
+    flag: "media/images/uruguay.png",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/uruguay.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Uruguay.mp4" 
+  },
+  "Paraguay": {
+    lat: -20.66,
+    lon: 31.86,
+    capital: "Asunción",
+    population: "7,000,000",
+    flag: "media/images/paraguay.png",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/Paraguay.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Paraguay.mp4" 
+  },
+  "Guyana": {
+    lat: 4.93,
+    lon: 30.52,
+    capital: "Georgetown",
+    population: "800,000",
+    flag: "media/images/guyana.png",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/guyana.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Guyana.mp4" 
+  },
+  "Surinam": {
+    lat: 4.22,
+    lon: 32.90,
+    capital: "Paramaribo",
+    population: "600,000",
+    flag: "media/images/surinam.png",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/surinam.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/Surinam.mp4" 
+  },
+  "Guayana Francesa": {
+    lat: 1.85,
+    lon: 38.39,
+    capital: "Cayena",
+    population: "300,000",
+    flag: "media/images/GuayanaF.png",  // Ruta de la imagen de la bandera
+    anthem: "media/audio/himnos/GuayanaF.mp3",  // Ruta del archivo de audio del himno
+    video: "media/videos/GuayanaF.mp4" 
+  }
+    };
+
+    function showCountryInfo(country, countryData) {
+      document.getElementById('country-name').textContent = country;
+      document.getElementById('capital').textContent = countryData.capital;
+      document.getElementById('population').textContent = countryData.population;
+      document.getElementById('flag').src = countryData.flag;
+      document.getElementById('anthem').src = countryData.anthem;
+      document.getElementById('video').src = countryData.video;
+      document.getElementById('info-panel').classList.add('show');
+    }
+
+ document.getElementById('close-btn').addEventListener('click', function() {
+  const anthem = document.getElementById('anthem');
+  anthem.pause();
+  anthem.currentTime = 0; // Reiniciar el audio al inicio
+
+  // Detener el video
+  const video = document.getElementById('video');
+  video.pause();
+  video.currentTime = 0; // Reiniciar el video al inicio
+  document.getElementById('info-panel').classList.remove('show');
+});
   </script>
 </body>
 </html>
