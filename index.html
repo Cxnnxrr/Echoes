@@ -87,85 +87,45 @@
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
-    const southAmericaTexture = new THREE.TextureLoader().load('textures/contornoa.jpg');
+    
     earth.material.map = normalTexture;
 
     let isHoveringSouthAmerica = false;
 
-    function isCursorOverSouthAmerica(intersect) {
-      const point = intersect.point.normalize();
-      const lat = Math.asin(point.y) * (180 / Math.PI);  // Latitud
-      const lon = Math.atan2(point.x, point.z) * (180 / Math.PI);  // Longitud
 
-      // Definir límites aproximados para Sudamérica
-      return lat < 15 && lat > -60 && lon > -85 && lon < -30; 
-    }
 
-    function onMouseMove(event) {
-      // Convertir las coordenadas del ratón a un rango entre -1 y 1
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      // Configurar el rayo a partir de las coordenadas del ratón
-      raycaster.setFromCamera(mouse, camera);
-
-      // Comprobar las intersecciones con la esfera de la Tierra
-      const intersects = raycaster.intersectObject(earth);
-
-      if (intersects.length > 0) {
-        // Si el ratón está sobre Sudamérica, cambiamos la textura
-        if (isCursorOverSouthAmerica(intersects[0])) {
-          if (!isHoveringSouthAmerica) {
-            console.log("Cursor sobre Sudamérica. Aplicando contorno...");
-            earth.material.map = southAmericaTexture;  // Aplica la textura de Sudamérica
-            earth.material.needsUpdate = true;  // Actualiza el material
-            isHoveringSouthAmerica = true;  // Marca que está sobre Sudamérica
-          }
-        } else {
-          // Si el ratón no está sobre Sudamérica, revertimos la textura
-          if (isHoveringSouthAmerica) {
-            console.log("Cursor fuera de Sudamérica. Revirtiendo textura...");
-            earth.material.map = normalTexture;  // Restaura la textura normal
-            earth.material.needsUpdate = true;  // Actualiza el material
-            isHoveringSouthAmerica = false;  // Marca que ya no está sobre Sudamérica
-          }
-        }
-      }
-    }
 
     window.addEventListener('click', onEarthClick);
-    window.addEventListener('mousemove', onMouseMove);
 
     function onEarthClick(event) {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObject(earth);
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(earth);
 
-      if (intersects.length > 0) {
-        const intersect = intersects[0];
-        const point = intersect.point.normalize(); // Normaliza el punto de intersección
-        const lat = Math.asin(point.y) * (180 / Math.PI); // Calcula la latitud
-        const lon = Math.atan2(point.x, point.z) * (180 / Math.PI); // Calcula la longitud
+  if (intersects.length > 0) {
+    const intersect = intersects[0];
+    const point = intersect.point.normalize(); // Normaliza el punto de intersección
+    const lat = Math.asin(point.y) * (180 / Math.PI); // Calcula la latitud
+    const lon = Math.atan2(point.x, point.z) * (180 / Math.PI); // Calcula la longitud
 
-        console.log(`Latitud: ${lat.toFixed(2)}, Longitud: ${lon.toFixed(2)}`);
+    console.log(`Latitud: ${lat.toFixed(2)}, Longitud: ${lon.toFixed(2)}`);
 
-        // Verifica si las coordenadas están dentro del rango de un país
-        for (let country in countriesData) {
-          const countryData = countriesData[country];
-          const countryLat = countryData.lat;
-          const countryLon = countryData.lon;
+    // Verifica si las coordenadas están dentro del margen del país
+    for (let country in countriesData) {
+      const countryData = countriesData[country];
+      const countryLat = countryData.lat;
+      const countryLon = countryData.lon;
+      const margin = countryData.clickMargin || 5; // Usa el margen del país o 5 por defecto
 
-          // Verifica si las coordenadas de clic están cerca de las del país
-          if (Math.abs(lat - countryLat) < 5 && Math.abs(lon - countryLon) < 5) {
-            // Mostrar información del país
-            showCountryInfo(country, countryData);
-            break;
-          }
-        }
+      if (Math.abs(lat - countryLat) < margin && Math.abs(lon - countryLon) < margin) {
+        showCountryInfo(country, countryData);
+        break;
       }
     }
+  }
+}
       
     function animate() {
       requestAnimationFrame(animate);
@@ -257,32 +217,98 @@
         lookAt: new THREE.Vector3(0, -250, 0),
       },
       northAmerica: {
-        position: new THREE.Vector3(-300, 400, 1100),
-        lookAt: new THREE.Vector3(0, 350, 0),
+        position: new THREE.Vector3(-200, 1000, 750),
+        lookAt: new THREE.Vector3(0, 150, 0),
       },
       centralAmerica: {
-        position: new THREE.Vector3(0, 150, 900),
+        position: new THREE.Vector3(50, 150, 850),
         lookAt: new THREE.Vector3(0, 100, 0),
       },
     };
 
-    document.querySelectorAll('.region-button').forEach((button, index) => {
-      button.addEventListener('click', function() {
-        clickSound.play();
+    // Cargar las texturas
+const textureLoader = new THREE.TextureLoader();
+const southAmericaTexture = textureLoader.load('textures/SA.jpg');
+const northAmericaTexture = textureLoader.load('textures/NA.jpg');
+const centralAmericaTexture = textureLoader.load('textures/CAM.jpg');
 
-        switch (index) {
-          case 0: 
-            moveToRegion(regions.southAmerica.position, regions.southAmerica.lookAt);
-            break;
-          case 1: 
-            moveToRegion(regions.northAmerica.position, regions.northAmerica.lookAt);
-            break;
-          case 2: 
-            moveToRegion(regions.centralAmerica.position, regions.centralAmerica.lookAt);
-            break;
-        }
-      });
-    });
+// Asignar la textura inicial a la Tierra
+earth.material.map = normalTexture;
+earth.material.needsUpdate = true;
+
+// Función para cambiar la textura con efecto de fade-in
+function changeEarthTexture(region) {
+  let newTexture;
+
+  switch (region) {
+    case 'southAmerica':
+      newTexture = southAmericaTexture;
+      break;
+    case 'northAmerica':
+      newTexture = northAmericaTexture;
+      break;
+    case 'centralAmerica':
+      newTexture = centralAmericaTexture;
+      break;
+    default:
+      newTexture = normalTexture;
+  }
+
+  // Crear un material temporal con la nueva textura
+  const newMaterial = new THREE.MeshStandardMaterial({
+    map: newTexture,
+    transparent: true,
+    opacity: 0, // Inicia con opacidad 0
+  });
+
+  // Crear una malla temporal con la nueva textura
+  const tempEarth = new THREE.Mesh(earth.geometry, newMaterial);
+  scene.add(tempEarth); // Añadir la malla temporal a la escena
+
+  // Animación de fade-in
+  let fadeDuration = 1000; // 1 segundo
+  let startTime = performance.now();
+
+  function animateFade(time) {
+    let elapsed = time - startTime;
+    let t = Math.min(elapsed / fadeDuration, 1); // Normaliza entre 0 y 1
+
+    newMaterial.opacity = t; // Aumenta la opacidad
+
+    if (t < 1) {
+      requestAnimationFrame(animateFade);
+    } else {
+      // Cuando la animación termina, cambiar la textura real y eliminar la malla temporal
+      earth.material.map = newTexture;
+      earth.material.needsUpdate = true;
+      scene.remove(tempEarth);
+    }
+  }
+
+  requestAnimationFrame(animateFade);
+}
+
+// Añadir eventos a los botones
+document.querySelectorAll('.region-button').forEach((button, index) => {
+  button.addEventListener('click', function() {
+    clickSound.play();
+
+    switch (index) {
+      case 0:
+        changeEarthTexture('southAmerica');
+        moveToRegion(regions.southAmerica.position, regions.southAmerica.lookAt);
+        break;
+      case 1:
+        changeEarthTexture('northAmerica');
+        moveToRegion(regions.northAmerica.position, regions.northAmerica.lookAt);
+        break;
+      case 2:
+        changeEarthTexture('centralAmerica');
+        moveToRegion(regions.centralAmerica.position, regions.centralAmerica.lookAt);
+        break;
+    }
+  });
+});
 
     const countriesData = {
       "Ecuador": {
@@ -292,20 +318,22 @@
         population: "17,000,000",
         flag: "media/images/Ecuador.jpg",
         anthem: "media/audio/himnos/Ecuador.mp3",
-        video: "media/videos/Ecuador.mp4" 
+        video: "media/videos/Ecuador.mp4",
+        clickMargin: 3  
       },
       "Colombia": {
-        lat: 6.19,
-        lon: 12.27,
+        lat: 1.99,
+        lon: 17.64,
         capital: "Bogotá",
         population: "50,000,000",
         flag: "media/images/Colombia.png",
         anthem: "media/audio/himnos/Colombia.mp3",
-        video: "media/videos/Colombia.mp4" 
+        video: "media/videos/Colombia.mp4",
+        clickMargin: 6  
       },
       "Perú": {
         lat: -9.48,
-        lon: 14.63,
+        lon: 9.81,
         capital: "Lima",
         population: "30,000,000",
         flag: "media/images/Peru.jpg",
@@ -313,8 +341,8 @@
         video: "media/videos/Peru.mp4" 
       },
      "Venezuela": {
-    lat: 6.26,
-    lon: 25.02,
+    lat: 7.55,
+    lon: 25.85,
     capital: "Caracas",
     population: "28,000,000",
     flag: "media/images/Venezuela.jpg",  // Ruta de la imagen de la bandera
@@ -328,7 +356,8 @@
     population: "211,000,000",
     flag: "media/images/Brasil.jpg",  // Ruta de la imagen de la bandera
     anthem: "media/audio/himnos/Brasil.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Brasil.mp4" 
+    video: "media/videos/Brasil.mp4", 
+    clickMargin: 10 
   },
   "Argentina": {
     lat: -30.75,
@@ -355,7 +384,8 @@
     population: "11,513,100",
     flag: "media/images/Bolivia.png",  // Ruta de la imagen de la bandera
     anthem: "media/audio/himnos/Bolivia.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Bolivia.mp4" 
+    video: "media/videos/Bolivia.mp4",
+    clickMargin: 4  
   },
   "Uruguay": {
     lat: -30.95,
@@ -376,33 +406,136 @@
     video: "media/videos/Paraguay.mp4" 
   },
   "Guyana": {
-    lat: 4.93,
-    lon: 30.52,
+    lat: 4.62,
+    lon: 31.03,
     capital: "Georgetown",
     population: "800,000",
     flag: "media/images/Guyana.png",  // Ruta de la imagen de la bandera
     anthem: "media/audio/himnos/Guyana.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Guyana.mp4" 
+    video: "media/videos/Guyana.mp4",
+    clickMargin: 2  
   },
   "Surinam": {
-    lat: 4.22,
-    lon: 32.90,
+    lat: 4.33,
+    lon: 34.12,
     capital: "Paramaribo",
     population: "600,000",
     flag: "media/images/Surinam.png",  // Ruta de la imagen de la bandera
     anthem: "media/audio/himnos/Surinam.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Surinam.mp4" 
+    video: "media/videos/Surinam.mp4",
+    clickMargin: 2  
   },
   "Guayana Francesa": {
-    lat: 1.85,
-    lon: 38.39,
+    lat: 4.15,
+    lon: 37.01,
     capital: "Cayena",
     population: "300,000",
     flag: "media/images/GuayanaF.png",  // Ruta de la imagen de la bandera
     anthem: "media/audio/himnos/GuayanaF.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/GuayanaF.mp4" 
-  }
-    };
+    video: "media/videos/GuayanaF.mp4",
+    clickMargin: 1 
+  },
+"México": {
+  lat: 22.53,
+  lon: -16.41,
+  capital: "Ciudad de México",
+  population: "129,150,971",
+  flag: "media/images/Mexico.png",
+  anthem: "media/audio/himnos/Mexico.mp3",
+  video: "media/videos/Mexico.mp4",
+  clickMargin: 10 
+},
+"Estados Unidos": {
+  lat: 38.90,
+  lon: -10.49,
+  capital: "Washington D.C.",
+  population: "331,893,745",
+  flag: "media/images/USA.jpg",
+  anthem: "media/audio/himnos/USA.mp3",
+  video: "media/videos/USA.mp4",
+  clickMargin: 13 
+},
+
+"Canadá": {
+  lat: 55.13,
+  lon: -14.33,
+  capital: "Ottawa",
+  population: "38,246,000",
+  flag: "media/images/Canada.jpg",
+  anthem: "media/audio/himnos/Canada.mp3",
+  video: "media/videos/Canada.mp4",
+  clickMargin: 10 
+},
+"Belice": {
+        lat: 17.39,
+        lon: 1.47,
+        capital: "Belmopán",
+        population: "419,199",
+        flag: "media/images/Belice.png",
+        anthem: "media/audio/himnos/Belice.mp3",
+        video: "media/videos/Belice.mp4",
+        clickMargin: 1 
+    },
+    "Guatemala": {
+        lat: 15.14,
+        lon: -1.22,
+        capital: "Ciudad de Guatemala",
+        population: "17.9 millones",
+        flag: "media/images/Guatemala.png",
+        anthem: "media/audio/himnos/Guatemala.mp3",
+        video: "media/videos/Guatemala.mp4",
+        clickMargin: 2 
+    },
+    "El Salvador": {
+        lat: 13.7942,
+        lon: 1.11,
+        capital: "San Salvador",
+        population: "6.5 millones",
+        flag: "media/images/El_Salvador.png",
+        anthem: "media/audio/himnos/El_Salvador.mp3",
+        video: "media/videos/El_Salvador.mp4",
+        clickMargin: 1 
+    },
+    "Honduras": {
+        lat: 14.82,
+        lon: 3.27,
+        capital: "Tegucigalpa",
+        population: "10.2 millones",
+        flag: "media/images/Honduras.png",
+        anthem: "media/audio/himnos/Honduras.mp3",
+        video: "media/videos/Honduras.mp4",
+        clickMargin: 2 
+    },
+    "Nicaragua": {
+        lat: 12.54,
+        lon: 6.28,
+        capital: "Managua",
+        population: "6.9 millones",
+        flag: "media/images/Nicaragua.png",
+        anthem: "media/audio/himnos/Nicaragua.mp3",
+        video: "media/videos/Nicaragua.mp4",
+        clickMargin: 2 
+    },
+    "Costa Rica": {
+        lat: 9.92,
+        lon: 6.03,
+        capital: "San José",
+        population: "5.2 millones",
+        flag: "media/images/CostaR.jpg",
+        anthem: "media/audio/himnos/CostaR.mp3",
+        video: "media/videos/CostaR.mp4",
+        clickMargin: 2 
+    },
+    "Panamá": {
+        lat: 9.18,
+        lon: 10.32,
+        capital: "Ciudad de Panamá",
+        population: "4.5 millones",
+        flag: "media/images/Panama.png",
+        anthem: "media/audio/himnos/Panama.mp3",
+        video: "media/videos/Panama.mp4"
+    }
+};
 
     function showCountryInfo(country, countryData) {
       document.getElementById('country-name').textContent = country;
