@@ -18,7 +18,7 @@ canvas {
     right: -450px; /* Panel oculto */
     width: 350px;
     max-height: 95vh; /* Limita la altura máxima del panel */
-    background-color: rgba(0, 0, 0, 0.9); /* Fondo semi-transparente */
+    background-color: rgba(0, 0, 0, 1.5); /* Fondo semi-transparente */
     color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
     padding: 20px;
