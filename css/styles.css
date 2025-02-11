@@ -32,7 +32,7 @@ canvas {
 
 /* Personaliza la barra de desplazamiento */
 #info-panel::-webkit-scrollbar {
-    width: 5px; /* Ancho de la barra de desplazamiento */
+    width: 7px; /* Ancho de la barra de desplazamiento */
 }
 
 #info-panel::-webkit-scrollbar-track {
