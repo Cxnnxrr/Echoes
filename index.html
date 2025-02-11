@@ -16,15 +16,25 @@
   <audio id="backButtonSound" src="media/audio/effects/efecto2.mp3"></audio>
 
   <!-- Panel Interactivo -->
-  <div id="info-panel">
-    <button id="close-btn">✖</button>
-    <h2 id="country-name"></h2>
-    <p><strong>Capital:</strong> <span id="capital"></span></p>
-    <p><strong>Población:</strong> <span id="population"></span></p>
-    <img id="flag" src="" alt="Bandera">
-    <audio id="anthem" controls></audio>
-    <video id="video" controls></video>
-  </div>
+<div id="info-panel">
+  <button id="close-btn">✖</button>
+  <center><h2 id="country-name"></h2></center>
+  <img id="flag" src="" alt="Bandera">
+  <audio id="anthem" controls></audio>
+  <video id="video" controls></video>
+  <p><strong>Capital: </strong><span id="capital"></span></p>
+  <p><strong>Población: </strong><span id="population"></span></p>
+  <p><strong>Moneda local: </strong><span id="moneda"></span></p>
+  <p><strong>Idiomas oficiales: </strong><span id="idiomas"></span></p>
+  <p><strong>Superficie: </strong><span id="superficie"></span></p>
+  <p><strong>Fechas importantes: </strong><span id="fechasImportantes"></span></p>
+  <p><strong>Plato típico: </strong><span id="platoTipico"></span></p>
+  <p><strong>Flora y fauna representativa: </strong><span id="floraFauna"></span></p>
+  <p><strong>Costumbres: </strong><span id="costumbres"></span></p>
+  <p><strong>Curiosidades: </strong><span id="curiosidades"></span></p>
+  <!-- Botón "Conoce más" -->
+  <button id="learn-more-btn" onclick="goToCountryPage()">Conoce más</button>
+</div>
 
   <!-- Botón Volver -->
   <button id="back-button" onclick="backToStartScreen()">Volver</button>
@@ -312,240 +322,436 @@ document.querySelectorAll('.region-button').forEach((button, index) => {
 
     const countriesData = {
       "Ecuador": {
-        lat: -1.67,
-        lon: 11.56,
-        capital: "Quito",
-        population: "17,000,000",
-        flag: "media/images/Ecuador.jpg",
-        anthem: "media/audio/himnos/Ecuador.mp3",
-        video: "media/videos/Ecuador.mp4",
-        clickMargin: 3  
-      },
+    lat: -1.67,
+    lon: 11.56,
+    flag: "media/images/Ecuador.jpg",
+    anthem: "media/audio/himnos/Ecuador.mp3",
+    video: "media/videos/Ecuador.mp4",
+    capital: "Quito",
+    population: "17 millones de habitantes",
+    moneda: "Dólar estadounidense (USD)",
+    idiomas: "Español, Kichwa y Shuar",
+    superficie: "283,561 km²",
+    fechasImportantes: "24 de mayo (Batalla de Pichincha), 10 de agosto (Independencia)",
+    platoTipico: "Encebollado",
+    floraFauna: "Orquídeas, ceibo, cóndor andino, tortuga gigante de Galápagos",
+    costumbres: "Fiestas de Quito, Carnaval de Guaranda, Pase del Niño",
+    curiosidades: "Ecuador es el país con más especies de colibríes en el mundo.",
+    clickMargin: 3
+  },
       "Colombia": {
-        lat: 1.99,
-        lon: 17.64,
-        capital: "Bogotá",
-        population: "50,000,000",
-        flag: "media/images/Colombia.png",
-        anthem: "media/audio/himnos/Colombia.mp3",
-        video: "media/videos/Colombia.mp4",
-        clickMargin: 6  
-      },
+    lat: 1.99,
+    lon: 17.64,
+    capital: "Bogotá",
+    population: "50 millones de habitantes",
+    flag: "media/images/Colombia.png",
+    anthem: "media/audio/himnos/Colombia.mp3",
+    video: "media/videos/Colombia.mp4",
+    moneda: "Peso colombiano (COP)",
+    idiomas: "Español",
+    superficie: "1,141,748 km²",
+    fechasImportantes: "20 de julio (Independencia), 7 de agosto (Batalla de Boyacá)",
+    platoTipico: "Bandeja paisa",
+    floraFauna: "Café, palma de cera, jaguar, delfín rosado",
+    costumbres: "Feria de Cali, Carnaval de Barranquilla, Festival Vallenato",
+    curiosidades: "Colombia es el país con mayor diversidad de aves en el mundo.",
+    clickMargin: 6
+  },
       "Perú": {
-        lat: -9.48,
-        lon: 9.81,
-        capital: "Lima",
-        population: "30,000,000",
-        flag: "media/images/Peru.jpg",
-        anthem: "media/audio/himnos/Peru.mp3",
-        video: "media/videos/Peru.mp4" 
-      },
+    lat: -9.48,
+    lon: 9.81,
+    capital: "Lima",
+    population: "33 millones de habitantes",
+    flag: "media/images/Peru.jpg",
+    anthem: "media/audio/himnos/Peru.mp3",
+    video: "media/videos/Peru.mp4",
+    moneda: "Sol peruano (PEN)",
+    idiomas: "Español, Quechua, Aymara",
+    superficie: "1,285,216 km²",
+    fechasImportantes: "28 de julio (Independencia), 18 de enero (Fundación de Lima)",
+    platoTipico: "Ceviche",
+    floraFauna: "Papas, vicuña, cóndor andino",
+    costumbres: "Fiesta de la Candelaria, Inti Raymi",
+    curiosidades: "Perú tiene más de 4,000 variedades de papa."
+  },
      "Venezuela": {
     lat: 7.55,
     lon: 25.85,
-    capital: "Caracas",
-    population: "28,000,000",
-    flag: "media/images/Venezuela.jpg",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Venezuela.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Venezuela.mp4" 
-},
+    "flag": "media/images/Venezuela.jpg",
+    "anthem": "media/audio/himnos/Venezuela.mp3",
+    "video": "media/videos/Venezuela.mp4",
+    "capital": "Caracas",
+    "population": "28 millones de habitantes",
+    "moneda": "Bolívar (VES)",
+    "idiomas": "Español",
+    "superficie": "916,445 km²",
+    "fechasImportantes": "5 de julio (Independencia), 24 de junio (Batalla de Carabobo)",
+    "platoTipico": "Arepa",
+    "floraFauna": "Orquídea, araguaney, jaguar, delfín rosado",
+    "costumbres": "Carnaval de Carúpano, Feria de la Chinita, Gaita zuliana",
+    "curiosidades": "El Salto Ángel, la cascada más alta del mundo, está en Venezuela."
+  },
   "Brasil": {
     lat: -10.44,
     lon: 37.46,
-    capital: "Brasilia",
-    population: "211,000,000",
-    flag: "media/images/Brasil.jpg",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Brasil.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Brasil.mp4", 
-    clickMargin: 10 
+    "flag": "media/images/Brasil.jpg",
+    "anthem": "media/audio/himnos/Brasil.mp3",
+    "video": "media/videos/Brasil.mp4",
+    "capital": "Brasilia",
+    "population": "211 millones de habitantes",
+    "moneda": "Real brasileño (BRL)",
+    "idiomas": "Portugués",
+    "superficie": "8,515,767 km²",
+    "fechasImportantes": "7 de septiembre (Independencia), 15 de noviembre (Proclamación de la República)",
+    "platoTipico": "Feijoada",
+    "floraFauna": "Caoba, jacarandá, jaguar, guacamayo",
+    "costumbres": "Carnaval de Río, Festa Junina, Capoeira",
+    "curiosidades": "Brasil es el país con mayor biodiversidad del mundo.",
+    clickMargin: 10
   },
   "Argentina": {
     lat: -30.75,
     lon: 25.44,
-    capital: "Buenos Aires",
-    population: "45,000,000",
-    flag: "media/images/Argentina.jpg",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Argentina.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Argentina.mp4" 
+    "flag": "media/images/Argentina.jpg",
+    "anthem": "media/audio/himnos/Argentina.mp3",
+    "video": "media/videos/Argentina.mp4",
+    "capital": "Buenos Aires",
+    "population": "45 millones de habitantes",
+    "moneda": "Peso argentino (ARS)",
+    "idiomas": "Español",
+    "superficie": "2,780,400 km²",
+    "fechasImportantes": "25 de mayo (Revolución de Mayo), 9 de julio (Independencia)",
+    "platoTipico": "Asado",
+    "floraFauna": "Ombú, ceibo, puma, ñandú",
+    "costumbres": "Mate, Tango, Fiesta de la Vendimia",
+    "curiosidades": "Argentina es el mayor productor de yerba mate en el mundo."
   },
-  "Chile": {
+   "Chile": {
     lat: -28.30,
     lon: 18.50,
-    capital: "Santiago",
-    population: "19,611,704",
-    flag: "media/images/Chile.png",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Chile.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Chile.mp4" 
+    "flag": "media/images/Chile.png",
+    "anthem": "media/audio/himnos/Chile.mp3",
+    "video": "media/videos/Chile.mp4",
+    "capital": "Santiago",
+    "population": "19.6 millones de habitantes",
+    "moneda": "Peso chileno (CLP)",
+    "idiomas": "Español",
+    "superficie": "756,102 km²",
+    "fechasImportantes": "18 de septiembre (Independencia), 21 de mayo (Día de las Glorias Navales)",
+    "platoTipico": "Empanada de pino",
+    "floraFauna": "Araucaria, copihue, huemul, cóndor andino",
+    "costumbres": "Fiestas Patrias, Carnaval Andino, Festival de Viña",
+    "curiosidades": "Chile tiene el desierto más árido del mundo: el Desierto de Atacama."
   },
   "Bolivia": {
     lat: -15.92,
     lon: 27.75,
-    capital: "Sucre",
-    population: "11,513,100",
-    flag: "media/images/Bolivia.png",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Bolivia.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Bolivia.mp4",
-    clickMargin: 4  
+    "flag": "media/images/Bolivia.png",
+    "anthem": "media/audio/himnos/Bolivia.mp3",
+    "video": "media/videos/Bolivia.mp4",
+    "capital": "Sucre (oficial), La Paz (sede de gobierno)",
+    "population": "11.8 millones de habitantes",
+    "moneda": "Boliviano (BOB)",
+    "idiomas": "Español",
+    "superficie": "1,098,581 km²",
+    "fechasImportantes": "6 de agosto (Independencia)",
+    "platoTipico": "Salteñas",
+    "floraFauna": "Quinua, queñua, jaguar, flamenco andino",
+    "costumbres": "Carnaval de Oruro, Alasitas, Fiesta del Gran Poder",
+    "curiosidades": "Bolivia tiene el salar más grande del mundo: el Salar de Uyuni.",
+    clickMargin: 5
   },
   "Uruguay": {
     lat: -30.95,
     lon: 33.87,
-    capital: "Montevideo",
-    population: "3,500,000",
-    flag: "media/images/Uruguay.png",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Uruguay.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Uruguay.mp4" 
+    "flag": "media/images/Uruguay.png",
+    "anthem": "media/audio/himnos/Uruguay.mp3",
+    "video": "media/videos/Uruguay.mp4",
+    "capital": "Montevideo",
+    "population": "3.5 millones de habitantes",
+    "moneda": "Peso uruguayo (UYU)",
+    "idiomas": "Español",
+    "superficie": "176,215 km²",
+    "fechasImportantes": "25 de agosto (Declaratoria de Independencia)",
+    "platoTipico": "Chivito",
+    "floraFauna": "Ceibo, ombú, carpincho, ñandú",
+    "costumbres": "Mate, Candombe, Carnaval de Montevideo",
+    "curiosidades": "Uruguay fue el primer país en legalizar la marihuana para uso recreativo."
   },
   "Paraguay": {
     lat: -20.66,
     lon: 31.86,
-    capital: "Asunción",
-    population: "7,000,000",
-    flag: "media/images/Paraguay.png",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Paraguay.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Paraguay.mp4" 
+    "flag": "media/images/Paraguay.png",
+    "anthem": "media/audio/himnos/Paraguay.mp3",
+    "video": "media/videos/Paraguay.mp4",
+    "capital": "Asunción",
+    "population": "7.3 millones de habitantes",
+    "moneda": "Guaraní (PYG)",
+    "idiomas": "Español y guaraní",
+    "superficie": "406,752 km²",
+    "fechasImportantes": "14 y 15 de mayo (Independencia)",
+    "platoTipico": "Sopa paraguaya",
+    "floraFauna": "Lapacho, yerba mate, jaguar, guacamayo azul",
+    "costumbres": "Tereré, Festival de San Juan, Carnaval Encarnaceno",
+    "curiosidades": "Paraguay tiene una de las mayores reservas de agua dulce subterránea del mundo: el Acuífero Guaraní."
   },
   "Guyana": {
     lat: 4.62,
     lon: 31.03,
-    capital: "Georgetown",
-    population: "800,000",
-    flag: "media/images/Guyana.png",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Guyana.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Guyana.mp4",
-    clickMargin: 2  
+    "flag": "media/images/Guyana.png",
+    "anthem": "media/audio/himnos/Guyana.mp3",
+    "video": "media/videos/Guyana.mp4",
+    "capital": "Georgetown",
+    "population": "800 mil habitantes",
+    "moneda": "Dólar guyanés (GYD)",
+    "idiomas": "Inglés",
+    "superficie": "214,969 km²",
+    "fechasImportantes": "26 de mayo (Independencia)",
+    "platoTipico": "Pepperpot",
+    "floraFauna": "Victoria regia, caoba, jaguar, anaconda",
+    "costumbres": "Mashramani, Diwali, Phagwah",
+    "curiosidades": "Guyana es el único país de Sudamérica donde el idioma oficial es el inglés.",
+    clickMargin: 2
   },
   "Surinam": {
     lat: 4.33,
     lon: 34.12,
-    capital: "Paramaribo",
-    population: "600,000",
-    flag: "media/images/Surinam.png",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/Surinam.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/Surinam.mp4",
-    clickMargin: 2  
+    "flag": "media/images/Surinam.png",
+    "anthem": "media/audio/himnos/Surinam.mp3",
+    "video": "media/videos/Surinam.mp4",
+    "capital": "Paramaribo",
+    "population": "618 mil habitantes",
+    "moneda": "Dólar surinamés (SRD)",
+    "idiomas": "Neerlandés",
+    "superficie": "163,820 km²",
+    "fechasImportantes": "25 de noviembre (Independencia)",
+    "platoTipico": "Pom",
+    "floraFauna": "Madera de hierro, orquídeas, oso hormiguero, tapir",
+    "costumbres": "Holi Phagwa, Día de la Liberación, Día de la Independencia",
+    "curiosidades": "Surinam es el país más pequeño de Sudamérica.",
+    clickMargin: 2
   },
   "Guayana Francesa": {
     lat: 4.15,
     lon: 37.01,
-    capital: "Cayena",
-    population: "300,000",
-    flag: "media/images/GuayanaF.png",  // Ruta de la imagen de la bandera
-    anthem: "media/audio/himnos/GuayanaF.mp3",  // Ruta del archivo de audio del himno
-    video: "media/videos/GuayanaF.mp4",
-    clickMargin: 1 
+    "flag": "media/images/GuayanaF.png",
+    "anthem": "media/audio/himnos/GuayanaFmp3",
+    "video": "media/videos/GuayanaF.mp4",
+    "capital": "Cayena",
+    "population": "294 mil habitantes",
+    "moneda": "Euro (EUR)",
+    "idiomas": "Francés",
+    "superficie": "83,534 km²",
+    "fechasImportantes": "14 de julio (Día Nacional de Francia)",
+    "platoTipico": "Colombo de pollo",
+    "floraFauna": "Cacao, caoba, caimán, mono aullador",
+    "costumbres": "Carnaval de Cayena, Fiesta Nacional de Francia",
+    "curiosidades": "Aquí se encuentra el Centro Espacial de Kourou, desde donde se lanzan los cohetes Ariane.",
+    clickMargin: 1
   },
 "México": {
-  lat: 22.53,
-  lon: -16.41,
-  capital: "Ciudad de México",
-  population: "129,150,971",
-  flag: "media/images/Mexico.png",
-  anthem: "media/audio/himnos/Mexico.mp3",
-  video: "media/videos/Mexico.mp4",
-  clickMargin: 10 
-},
-"Estados Unidos": {
-  lat: 38.90,
-  lon: -10.49,
-  capital: "Washington D.C.",
-  population: "331,893,745",
-  flag: "media/images/USA.jpg",
-  anthem: "media/audio/himnos/USA.mp3",
-  video: "media/videos/USA.mp4",
-  clickMargin: 13 
-},
+    lat: 22.53,
+    lon: -16.41,
+    "flag": "media/images/Mexico.png",
+    "anthem": "media/audio/himnos/Mexico.mp3",
+    "video": "media/videos/Mexico.mp4",
+    "capital": "Ciudad de México",
+    "population": "129.1 millones de habitantes",
+    "moneda": "Peso mexicano (MXN)",
+    "idiomas": "Español",
+    "superficie": "1,964,375 km²",
+    "fechasImportantes": "16 de septiembre (Independencia), 20 de noviembre (Revolución Mexicana)",
+    "platoTipico": "Tacos al pastor",
+    "floraFauna": "Cactus, maíz, águila real, ajolote",
+    "costumbres": "Día de los Muertos, Guelaguetza, Posadas navideñas",
+    "curiosidades": "México es el país con más sitios declarados Patrimonio de la Humanidad en América.",
+    clickMargin: 10 
+  },
+ "Estados Unidos": {
+    lat: 38.90,
+    lon: -10.49,
+    "flag": "media/images/USA.jpg",
+    "anthem": "media/audio/himnos/USA.mp3",
+    "video": "media/videos/USA.mp4",
+    "capital": "Washington D.C.",
+    "population": "331.8 millones de habitantes",
+    "moneda": "Dólar estadounidense (USD)",
+    "idiomas": "Inglés y español",
+    "superficie": "9,833,517 km²",
+    "fechasImportantes": "4 de julio (Independencia), 11 de noviembre (Día de los Veteranos)",
+    "platoTipico": "Hamburguesa",
+    "floraFauna": "Secuoya, girasol, águila calva, bisonte",
+    "costumbres": "Acción de Gracias, Super Bowl, 4 de julio",
+    "curiosidades": "EE.UU. tiene el Gran Cañón, una de las maravillas naturales del mundo.",
+    clickMargin: 13
+  },
 
 "Canadá": {
-  lat: 55.13,
-  lon: -14.33,
-  capital: "Ottawa",
-  population: "38,246,000",
-  flag: "media/images/Canada.jpg",
-  anthem: "media/audio/himnos/Canada.mp3",
-  video: "media/videos/Canada.mp4",
-  clickMargin: 10 
+    lat: 55.13,
+    lon: -14.33,
+    "flag": "media/images/Canada.jpg",
+    "anthem": "media/audio/himnos/Canada.mp3",
+    "video": "media/videos/Canada.mp4",
+    "capital": "Ottawa",
+    "population": "38.2 millones de habitantes",
+    "moneda": "Dólar canadiense (CAD)",
+    "idiomas": "Inglés y francés",
+    "superficie": "9,984,670 km²",
+    "fechasImportantes": "1 de julio (Día de Canadá), 11 de noviembre (Día del Recuerdo)",
+    "platoTipico": "Poutine",
+    "floraFauna": "Arce, pino, alce, castor",
+    "costumbres": "Festival de Invierno de Quebec, Hockey sobre hielo, Acción de Gracias",
+    "curiosidades": "Canadá tiene más lagos que el resto del mundo combinado.",
+    clickMargin: 10
 },
 "Belice": {
-        lat: 17.39,
-        lon: 1.47,
-        capital: "Belmopán",
-        population: "419,199",
-        flag: "media/images/Belice.png",
-        anthem: "media/audio/himnos/Belice.mp3",
-        video: "media/videos/Belice.mp4",
-        clickMargin: 1 
-    },
+    lat: 17.39,
+    lon: 1.47,
+    "flag": "media/images/Belice.png",
+    "anthem": "media/audio/himnos/Belice.mp3",
+    "video": "media/videos/Belice.mp4",
+    "capital": "Belmopán",
+    "population": "419 mil habitantes",
+    "moneda": "Dólar beliceño (BZD)",
+    "idiomas": "Inglés",
+    "superficie": "22,966 km²",
+    "fechasImportantes": "21 de septiembre (Independencia)",
+    "platoTipico": "Rice and beans",
+    "floraFauna": "Caoba, orquídeas, jaguar, manatí",
+    "costumbres": "Día de la Independencia, Festival Garífuna, Día de San Jorge",
+    "curiosidades": "Belice tiene la segunda barrera de coral más grande del mundo.",
+    clickMargin: 2
+},
     "Guatemala": {
-        lat: 15.14,
-        lon: -1.22,
-        capital: "Ciudad de Guatemala",
-        population: "17.9 millones",
-        flag: "media/images/Guatemala.png",
-        anthem: "media/audio/himnos/Guatemala.mp3",
-        video: "media/videos/Guatemala.mp4",
-        clickMargin: 2 
-    },
+    lat: 15.14,
+    lon: -1.22,
+    "flag": "media/images/Guatemala.png",
+    "anthem": "media/audio/himnos/Guatemala.mp3",
+    "video": "media/videos/Guatemala.mp4",
+    "capital": "Ciudad de Guatemala",
+    "population": "17.6 millones de habitantes",
+    "moneda": "Quetzal (GTQ)",
+    "idiomas": "Español",
+    "superficie": "108,889 km²",
+    "fechasImportantes": "15 de septiembre (Independencia)",
+    "platoTipico": "Pepián",
+    "floraFauna": "Ceiba, café, quetzal, jaguar",
+    "costumbres": "Semana Santa, Día de los Muertos (barriletes gigantes), Fiesta de Santiago",
+    "curiosidades": "El Quetzal, ave nacional de Guatemala, no sobrevive en cautiverio.",
+    clickMargin: 2 
+  },
     "El Salvador": {
-        lat: 13.7942,
-        lon: 1.11,
-        capital: "San Salvador",
-        population: "6.5 millones",
-        flag: "media/images/El_Salvador.png",
-        anthem: "media/audio/himnos/El_Salvador.mp3",
-        video: "media/videos/El_Salvador.mp4",
-        clickMargin: 1 
-    },
+    lat: 13.7942,
+    lon: 1.11,
+    "flag": "media/images/El_Salvador.png",
+    "anthem": "media/audio/himnos/El_Salvador.mp3",
+    "video": "media/videos/El_Salvador.mp4",
+    "capital": "San Salvador",
+    "population": "6.5 millones de habitantes",
+    "moneda": "Dólar estadounidense (USD) y Bitcoin",
+    "idiomas": "Español",
+    "superficie": "21,041 km²",
+    "fechasImportantes": "15 de septiembre (Independencia)",
+    "platoTipico": "Pupusas",
+    "floraFauna": "Balsamo, loroco, venado cola blanca, torogoz",
+    "costumbres": "Fiestas Agostinas, Semana Santa, Día de la Cruz",
+    "curiosidades": "Es el primer país en el mundo en adoptar Bitcoin como moneda de curso legal.",
+    clickMargin: 1 
+  },
     "Honduras": {
-        lat: 14.82,
-        lon: 3.27,
-        capital: "Tegucigalpa",
-        population: "10.2 millones",
-        flag: "media/images/Honduras.png",
-        anthem: "media/audio/himnos/Honduras.mp3",
-        video: "media/videos/Honduras.mp4",
-        clickMargin: 2 
-    },
+    lat: 14.82,
+    lon: 3.27,
+    "flag": "media/images/Honduras.png",
+    "anthem": "media/audio/himnos/Honduras.mp3",
+    "video": "media/videos/Honduras.mp4",
+    "capital": "Tegucigalpa y Comayagüela",
+    "population": "10.1 millones de habitantes",
+    "moneda": "Lempira (HNL)",
+    "idiomas": "Español",
+    "superficie": "112,492 km²",
+    "fechasImportantes": "15 de septiembre (Independencia)",
+    "platoTipico": "Baleadas",
+    "floraFauna": "Orquídeas, caoba, guacamaya roja, tapir",
+    "costumbres": "Feria Juniana, Carnaval de La Ceiba, Semana Santa",
+    "curiosidades": "Copán es una de las ciudades mayas más importantes de la historia.",
+    clickMargin: 2 
+  },
     "Nicaragua": {
-        lat: 12.54,
-        lon: 6.28,
-        capital: "Managua",
-        population: "6.9 millones",
-        flag: "media/images/Nicaragua.png",
-        anthem: "media/audio/himnos/Nicaragua.mp3",
-        video: "media/videos/Nicaragua.mp4",
-        clickMargin: 2 
-    },
+    lat: 12.54,
+    lon: 6.28,
+    "flag": "media/images/Nicaragua.png",
+    "anthem": "media/audio/himnos/Nicaragua.mp3",
+    "video": "media/videos/Nicaragua.mp4",
+    "capital": "Managua",
+    "population": "6.9 millones de habitantes",
+    "moneda": "Córdoba nicaragüense (NIO)",
+    "idiomas": "Español",
+    "superficie": "130,373 km²",
+    "fechasImportantes": "15 de septiembre (Independencia)",
+    "platoTipico": "Gallo pinto",
+    "floraFauna": "Sacuanjoche, mangle rojo, guardabarranco, jaguar",
+    "costumbres": "La Purísima, Tope de los Toros, Fiesta de Santo Domingo",
+    "curiosidades": "Tiene el único lago de agua dulce con tiburones en el mundo: el Lago de Nicaragua.",
+    clickMargin: 3 
+  },
     "Costa Rica": {
-        lat: 9.92,
-        lon: 6.03,
-        capital: "San José",
-        population: "5.2 millones",
-        flag: "media/images/CostaR.jpg",
-        anthem: "media/audio/himnos/CostaR.mp3",
-        video: "media/videos/CostaR.mp4",
-        clickMargin: 2 
-    },
+     lat: 9.92,
+     lon: 6.03,
+    "flag": "media/images/CostaR.jpg",
+    "anthem": "media/audio/himnos/CostaR.mp3",
+    "video": "media/videos/CostaR.mp4",
+    "capital": "San José",
+    "population": "5.2 millones de habitantes",
+    "moneda": "Colón costarricense (CRC)",
+    "idiomas": "Español",
+    "superficie": "51,100 km²",
+    "fechasImportantes": "15 de septiembre (Independencia)",
+    "platoTipico": "Casado",
+    "floraFauna": "Guanacaste, orquídeas, rana arborícola, perezoso",
+    "costumbres": "Fiestas de Palmares, Día de los Boyeros, Festival de la Luz",
+    "curiosidades": "Costa Rica no tiene ejército desde 1949.",
+    clickMargin: 3
+  },
     "Panamá": {
-        lat: 9.18,
-        lon: 10.32,
-        capital: "Ciudad de Panamá",
-        population: "4.5 millones",
-        flag: "media/images/Panama.png",
-        anthem: "media/audio/himnos/Panama.mp3",
-        video: "media/videos/Panama.mp4"
-    }
+    lat: 9.18,
+    lon: 10.32,
+    "flag": "media/images/Panama.png",
+    "anthem": "media/audio/himnos/Panama.mp3",
+    "video": "media/videos/Panama.mp4",
+    "capital": "Ciudad de Panamá",
+    "population": "4.5 millones de habitantes",
+    "moneda": "Balboa (PAB) y dólar estadounidense (USD)",
+    "idiomas": "Español",
+    "superficie": "75,417 km²",
+    "fechasImportantes": "3 de noviembre (Separación de Colombia), 28 de noviembre (Independencia de España)",
+    "platoTipico": "Sancocho panameño",
+    "floraFauna": "Espavé, mangle, águila harpía, rana dorada",
+    "costumbres": "Carnavales, Festival de la Mejorana, Semana Santa",
+    "curiosidades": "El Canal de Panamá conecta el océano Atlántico con el océano Pacífico y es una de las mayores obras de ingeniería del mundo."
+  }
 };
 
     function showCountryInfo(country, countryData) {
-      document.getElementById('country-name').textContent = country;
-      document.getElementById('capital').textContent = countryData.capital;
-      document.getElementById('population').textContent = countryData.population;
-      document.getElementById('flag').src = countryData.flag;
-      document.getElementById('anthem').src = countryData.anthem;
-      document.getElementById('video').src = countryData.video;
-      document.getElementById('info-panel').classList.add('show');
-    }
+    document.getElementById('country-name').textContent = country;
+    document.getElementById('capital').textContent = countryData.capital;
+    document.getElementById('population').textContent = countryData.population;
+    document.getElementById('flag').src = countryData.flag;
+    document.getElementById('anthem').src = countryData.anthem;
+    document.getElementById('video').src = countryData.video;
+    document.getElementById("moneda").textContent = countryData.moneda;
+    document.getElementById("idiomas").textContent = countryData.idiomas;
+    document.getElementById("superficie").textContent = countryData.superficie;
+    document.getElementById("fechasImportantes").textContent = countryData.fechasImportantes;
+    document.getElementById("platoTipico").textContent = countryData.platoTipico;
+    document.getElementById("floraFauna").textContent = countryData.floraFauna;
+    document.getElementById("costumbres").textContent = countryData.costumbres;
+    document.getElementById("curiosidades").textContent = countryData.curiosidades;
+
+    const infoPanel = document.getElementById("info-panel");
+    infoPanel.classList.add("show"); // Muestra el panel
+    infoPanel.style.display = "block"; // Asegura que no esté oculto
+    infoPanel.scrollTop = 0; // Reinicia el desplazamiento al mostrar el panel
+}
 
  document.getElementById('close-btn').addEventListener('click', function() {
   const anthem = document.getElementById('anthem');
@@ -558,6 +764,103 @@ document.querySelectorAll('.region-button').forEach((button, index) => {
   video.currentTime = 0; // Reiniciar el video al inicio
   document.getElementById('info-panel').classList.remove('show');
 });
+const panel = document.getElementById("info-panel"); // Asegúrate de usar el ID correcto
+
+panel.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    panel.scrollBy({
+        top: event.deltaY * 1.5, // Ajusta la velocidad del desplazamiento
+        behavior: "smooth",
+    });
+});
+
+function goToCountryPage() {
+    const countryName = document.getElementById('country-name').textContent; // Obtiene el nombre del país
+    let pageUrl = '';
+
+    // Establece la URL según el país
+    switch (countryName) {
+        case 'Ecuador':
+            pageUrl = 'https://ecuador.travel/';
+            break;
+        case 'Colombia':
+            pageUrl = 'https://colombia.travel/es';
+            break;
+        case 'Perú':
+            pageUrl = 'https://www.peru.travel/es';
+            break;
+        case 'Venezuela':
+            pageUrl = 'https://www.mintur.gob.ve/';
+            break;
+        case 'Brasil':
+            pageUrl = 'https://visitbrasil.com/es/';
+            break;
+        case 'Argentina':
+            pageUrl = 'https://www.argentina.travel/';
+            break;
+         case 'Chile':
+            pageUrl = 'https://chile.travel/';
+            break;
+case 'Bolivia':
+            pageUrl = 'https://www.boliviaturismo.com.bo/';
+            break;
+case 'Uruguay':
+            pageUrl = 'https://uruguaynatural.com/es/';
+            break;
+case 'Paraguay':
+            pageUrl = 'https://visitparaguay.travel/';
+            break;
+case 'Guyana':
+            pageUrl = 'https://www.guyanatourism.com/es';
+            break;
+case 'Surinam':
+            pageUrl = 'https://www.tripadvisor.es/Tourism-g294081-Suriname-Vacations.html';
+            break;
+case 'Guayana Francesa':
+            pageUrl = 'https://www.tripadvisor.es/Tourism-g294075-French_Guiana-Vacations.html';
+            break;
+case 'México':
+            pageUrl = 'https://visitmexico.com/';
+            break;
+case 'Estados Unidos':
+            pageUrl = 'https://www.visittheusa.mx/';
+            break;
+case 'Canadá':
+            pageUrl = 'https://travel.destinationcanada.com/es-mx';
+            break;
+case 'Belice':
+            pageUrl = 'https://www.travelbelize.org/es/';
+            break;
+case 'Guatemala':
+            pageUrl = 'https://visitguatemala.gt/';
+            break;
+case 'El Salvador':
+            pageUrl = 'https://elsalvador.travel/';
+            break;
+
+case 'Honduras':
+            pageUrl = 'https://www.honduras.travel/';
+            break;
+
+case 'Nicaragua':
+            pageUrl = 'https://www.intur.gob.ni/';
+            break;
+
+case 'Costa Rica':
+            pageUrl = 'https://es.visitcostarica.com/';
+            break;
+
+case 'Panamá':
+            pageUrl = 'https://es.tourismpanama.com/';
+            break;
+        // Agrega más casos para otros países según sea necesario
+        default:
+            pageUrl = 'default.html'; // Página por defecto si no se encuentra el país
+    }
+
+    // Redirige a la página correspondiente
+    window.open(pageUrl, '_blank');
+}
   </script>
 </body>
 </html>
