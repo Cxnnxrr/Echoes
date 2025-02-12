@@ -32,7 +32,7 @@ canvas {
 
 /* Personaliza la barra de desplazamiento */
 #info-panel::-webkit-scrollbar {
-    width: 7px; /* Ancho de la barra de desplazamiento */
+    width: 5px; /* Ancho de la barra de desplazamiento */
 }
 
 #info-panel::-webkit-scrollbar-track {
@@ -229,10 +229,84 @@ audio, video {
   height: auto; /* Mantiene la proporción de la imagen */
 }
 
-.data-row {
-    display: flex; /* Usar flexbox para alinear la imagen y el texto */
-    align-items: center; /* Alinear verticalmente */
-    margin: 10px 0; /* Espaciado entre filas */
+.capital-icon {
+    width: 35px; /* Ajusta el tamaño de la imagen de capital */
+    height: 35px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.population-icon {
+    width: 38px; /* Ajusta el tamaño de la imagen de población */
+    height: 25px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.currency-icon {
+    width: 30px; /* Ajusta el tamaño de la imagen de moneda */
+    height: 30px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.language-icon {
+    width: 37px; /* Ajusta el tamaño de la imagen de idiomas */
+    height: 35px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.area-icon {
+    width: 30px; /* Ajusta el tamaño de la imagen de superficie */
+    height: 30px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.dates-icon {
+    width: 32px; /* Ajusta el tamaño de la imagen de fechas */
+    height: 32px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.dish-icon {
+    width: 35px; /* Ajusta el tamaño de la imagen de plato */
+    height: 30px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.flora-icon {
+    width: 20px; /* Ajusta el tamaño de la imagen de flora */
+    height: 30px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.customs-icon {
+    width: 30px; /* Ajusta el tamaño de la imagen de costumbres */
+    height: 30px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
+}
+
+.curiosities-icon {
+    width: 30px; /* Ajusta el tamaño de la imagen de curiosidades */
+    height: 30px;
+    margin-right: 5px; /* Espacio entre la imagen y el texto */
+    vertical-align: middle; /* Alinea verticalmente la imagen con el texto */
+    display: inline-block;
 }
 
 
