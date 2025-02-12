@@ -23,16 +23,66 @@
   <img id="flag" src="" alt="Bandera">
   <audio id="anthem" controls></audio>
   <video id="video" controls></video>
-  <p><strong>Capital: </strong><span id="capital"></span></p>
-  <p><strong>Población: </strong><span id="population"></span></p>
-  <p><strong>Moneda local: </strong><span id="moneda"></span></p>
-  <p><strong>Idiomas oficiales: </strong><span id="idiomas"></span></p>
-  <p><strong>Superficie: </strong><span id="superficie"></span></p>
-  <p><strong>Fechas importantes: </strong><span id="fechasImportantes"></span></p>
-  <p><strong>Plato típico: </strong><span id="platoTipico"></span></p>
-  <p><strong>Flora y fauna representativa: </strong><span id="floraFauna"></span></p>
-  <p><strong>Costumbres: </strong><span id="costumbres"></span></p>
-  <p><strong>Curiosidades: </strong><span id="curiosidades"></span></p>
+  <p>
+    <img src="media/images/Capital.png" class="capital-icon"> <!-- Imagen de capital -->
+    <strong>Capital: </strong>
+    <span id="capital"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/poblacion.png" class="population-icon"> <!-- Imagen de población -->
+    <strong>Población: </strong>
+    <span id="population"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/moneda.png" class="currency-icon"> <!-- Imagen de moneda -->
+    <strong>Moneda local: </strong>
+    <span id="moneda"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/idiomas.png" class="language-icon"> <!-- Imagen de idiomas -->
+    <strong>Idiomas oficiales: </strong>
+    <span id="idiomas"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/superficie.png" class="area-icon"> <!-- Imagen de superficie -->
+    <strong>Superficie: </strong>
+    <span id="superficie"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/fechas.png" class="dates-icon"> <!-- Imagen de fechas -->
+    <strong>Fechas importantes: </strong>
+    <span id="fechasImportantes"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/plato.png" class="dish-icon"> <!-- Imagen de plato -->
+    <strong>Plato típico: </strong>
+    <span id="platoTipico"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/flora.png" class="flora-icon"> <!-- Imagen de flora -->
+    <strong>Flora y fauna representativa: </strong>
+    <span id="floraFauna"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/costumbres.png" class="customs-icon"> <!-- Imagen de costumbres -->
+    <strong>Costumbres: </strong>
+    <span id="costumbres"></span>
+  </p>
+  
+  <p>
+    <img src="media/images/curiosidades.png" class="curiosities-icon"> <!-- Imagen de curiosidades -->
+    <strong>Curiosidades: </strong>
+    <span id="curiosidades"></span>
+  </p>
+  
   <!-- Botón "Conoce más" -->
   <button id="learn-more-btn" onclick="goToCountryPage()">Conoce más</button>
 </div>
@@ -536,7 +586,7 @@ document.querySelectorAll('.region-button').forEach((button, index) => {
     lat: 4.15,
     lon: 37.01,
     "flag": "media/images/GuayanaF.png",
-    "anthem": "media/audio/himnos/GuayanaF.mp3",
+    "anthem": "media/audio/himnos/GuayanaFmp3",
     "video": "media/videos/GuayanaF.mp4",
     "capital": "Cayena",
     "population": "294 mil habitantes",
