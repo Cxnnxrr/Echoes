@@ -92,9 +92,9 @@
 
   <!-- Botones de región -->
   <div id="button-container">
-    <button class="region-button">Sudamérica</button>
     <button class="region-button">Norteamérica</button>
     <button class="region-button">Centroamérica</button>
+    <button class="region-button">Sudamérica</button>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
@@ -273,10 +273,6 @@
     }
 
     const regions = {
-      southAmerica: {
-        position: new THREE.Vector3(500, -300, 1200),
-        lookAt: new THREE.Vector3(0, -250, 0),
-      },
       northAmerica: {
         position: new THREE.Vector3(-200, 1000, 750),
         lookAt: new THREE.Vector3(0, 150, 0),
@@ -284,6 +280,10 @@
       centralAmerica: {
         position: new THREE.Vector3(50, 150, 850),
         lookAt: new THREE.Vector3(0, 100, 0),
+      },
+      southAmerica: {
+        position: new THREE.Vector3(500, -300, 1200),
+        lookAt: new THREE.Vector3(0, -250, 0),
       },
     };
 
@@ -302,14 +302,15 @@ function changeEarthTexture(region) {
   let newTexture;
 
   switch (region) {
-    case 'southAmerica':
-      newTexture = southAmericaTexture;
-      break;
+    
     case 'northAmerica':
       newTexture = northAmericaTexture;
       break;
     case 'centralAmerica':
       newTexture = centralAmericaTexture;
+      break;
+    case 'southAmerica':
+      newTexture = southAmericaTexture;
       break;
     default:
       newTexture = normalTexture;
@@ -355,18 +356,18 @@ document.querySelectorAll('.region-button').forEach((button, index) => {
     clickSound.play();
 
     switch (index) {
-      case 0:
-        changeEarthTexture('southAmerica');
-        moveToRegion(regions.southAmerica.position, regions.southAmerica.lookAt);
-        break;
-      case 1:
-        changeEarthTexture('northAmerica');
-        moveToRegion(regions.northAmerica.position, regions.northAmerica.lookAt);
-        break;
-      case 2:
-        changeEarthTexture('centralAmerica');
-        moveToRegion(regions.centralAmerica.position, regions.centralAmerica.lookAt);
-        break;
+     case 0:
+            changeEarthTexture('northAmerica');
+            moveToRegion(regions.northAmerica.position, regions.northAmerica.lookAt);
+            break;
+          case 1:
+            changeEarthTexture('centralAmerica');
+            moveToRegion(regions.centralAmerica.position, regions.centralAmerica.lookAt);
+            break;
+          case 2:
+            changeEarthTexture('southAmerica');
+            moveToRegion(regions.southAmerica.position, regions.southAmerica.lookAt);
+            break;
     }
   });
 });
